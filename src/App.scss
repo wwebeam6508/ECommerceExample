@@ -1,5 +1,13 @@
+@import "~bootstrap/scss/bootstrap";
 .App {
   text-align: center;
+}
+.center-screen {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  min-height: 100vh;
 }
 
 .App-logo {

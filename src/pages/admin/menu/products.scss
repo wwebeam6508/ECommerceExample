@@ -1,0 +1,23 @@
+.imagepicker{
+    background-color: gray;
+    width: 250px;
+    height: 250px;
+    margin-left: 10px;
+    position: relative;
+    .iconimage{
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin-right: -50%;
+        transform: translate(-50%, -50%);
+        color: black;
+    }
+}
+
+.imagepicker:hover{
+    cursor: pointer;
+    .iconimage{
+        color: wheat;
+    }
+}
