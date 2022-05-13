@@ -40,7 +40,7 @@ export default function ProductType() {
                 <Container>
                     <Navbar.Brand onClick={()=>{history.push('/')}}>จัดการรายการประเภทสินค้า</Navbar.Brand>
                     <Nav className="me-auto">
-                        <Nav.Link onClick={()=>{history.push('/admin')}}>ย้อนกลับ</Nav.Link>
+                        <Nav.Link onClick={()=>{history.goBack()}}>ย้อนกลับ</Nav.Link>
                     </Nav>
                 </Container>
             </Navbar>

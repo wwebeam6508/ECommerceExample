@@ -21,6 +21,7 @@ import HR from './pages/admin/menu/hr'
 import ProductType from './pages/admin/menu/productType'
 import Products from './pages/admin/menu/products'
 import ProductView from './pages/productView/productView'
+import Cart from './pages/cartView/cart'
 
 firebase.initializeApp(firebaseConfig)
 function App() {
@@ -68,6 +69,8 @@ function App() {
             render={()=>( isLoggedIn ? userType === 'user' ? <Home/> : <Redirect to="/admin" />  : <Redirect to="/login" /> )} />
           <Route path="/productView" 
               render={()=>( isLoggedIn ? userType === 'user' ? <ProductView/> : <Redirect to="/admin" />  : <Redirect to="/login" /> )} />
+          <Route path="/cart" 
+              render={()=>( isLoggedIn ? userType === 'user' ? <Cart/> : <Redirect to="/admin" />  : <Redirect to="/login" /> )} />
           <Route path="/setting" 
             render={()=>( isLoggedIn ?  <Setting/> : <Redirect to="/login" /> )} />
           <Route path="/login" 

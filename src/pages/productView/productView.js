@@ -16,6 +16,8 @@ export default function ProductView() {
     
     const paramData = history.location.state
     const [images, setImages] = useState([])
+
+    let carts = JSON.parse(localStorage.getItem('carts'))
     useEffect(()=>{
         async function init() {
             await getProductImages()
@@ -35,7 +37,7 @@ export default function ProductView() {
                 <Container>
                     <Navbar.Brand onClick={()=>{history.push('/')}}>จัดการรายการสั่งซื้อ</Navbar.Brand>
                     <Nav className="me-auto">
-                        <Nav.Link onClick={()=>{history.push('/home')}}>ย้อนกลับ</Nav.Link>
+                        <Nav.Link onClick={()=>{history.goBack()}}>ย้อนกลับ</Nav.Link>
                     </Nav>
                 </Container>
             </Navbar>
@@ -44,7 +46,19 @@ export default function ProductView() {
                     <div className="col-md-5 p-lg-5 mx-auto my-5">
                         <h1 className="display-4 font-weight-normal">{paramData.name}</h1>
                         <p className="lead font-weight-normal">{paramData.detail}</p>
-                        <a className="btn btn-outline-secondary" >ใส่ลงตระก้า</a>
+                        <a className="btn btn-outline-secondary" onClick={async ()=>{
+                            console.log(carts)
+                            carts.push(paramData.uid)
+                            localStorage.setItem('carts', JSON.stringify(carts))
+                            MySwal.fire({
+                                icon: 'success',
+                                title: `เพิ่มลงตระก้า`,
+                                text: `เพิ่มสำเร็จ`
+                            }).then((
+                                history.push('/home')
+                            ))
+                            
+                        }}>ใส่ลงตระก้า</a>
                     </div>
                     <div className="product-device box-shadow d-none d-md-block"></div>
                     <div className="product-device product-device-2 box-shadow d-none d-md-block"></div>

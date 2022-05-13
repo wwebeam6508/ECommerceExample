@@ -48,7 +48,7 @@ export default function HR() {
                 <Container>
                     <Navbar.Brand onClick={()=>{history.push('/')}}>จัดการพนักงาน</Navbar.Brand>
                     <Nav className="me-auto">
-                        <Nav.Link onClick={()=>{history.push('/admin')}}>ย้อนกลับ</Nav.Link>
+                        <Nav.Link onClick={()=>{history.goBack()}}>ย้อนกลับ</Nav.Link>
                     </Nav>
                 </Container>
             </Navbar>
