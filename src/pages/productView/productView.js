@@ -47,7 +47,6 @@ export default function ProductView() {
                         <h1 className="display-4 font-weight-normal">{paramData.name}</h1>
                         <p className="lead font-weight-normal">{paramData.detail}</p>
                         <a className="btn btn-outline-secondary" onClick={async ()=>{
-                            console.log(carts)
                             carts.push(paramData.uid)
                             localStorage.setItem('carts', JSON.stringify(carts))
                             MySwal.fire({

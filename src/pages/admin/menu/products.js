@@ -115,7 +115,6 @@ export default function Products() {
                     <Form.Group className="mb-3" controlId="formBasicName">
                         <Form.Label>หมวดหมู่สินค้า</Form.Label>
                         <Form.Select aria-label="หมวดหมู่สินค้า" value={productModal.type} onChange={(e)=>{
-                            console.log(e.target.value)
                             setProductModal(prevForm => ({
                                 ...prevForm,
                                 type: e.target.value
@@ -211,7 +210,6 @@ export default function Products() {
             ...prevForm,
             images: imageList
         }))
-        console.log(productModal)
     }
 
     async function getProducts() {
@@ -269,7 +267,6 @@ export default function Products() {
     }
 
     async function addProduct(){
-        console.log(productModal.type)
         if(isEmpty(productModal.name)||isEmpty(productModal.type)){
             MySwal.fire({
                 icon: 'warning',

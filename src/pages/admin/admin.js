@@ -32,9 +32,10 @@ export default function Admin() {
             <Container className="middlething" >
                 <Row style={{marginTop:"25%"}}>
                     <Button className="meunuadmin" onClick={()=>{history.push('/hr')}}> จัดการพนักงาน </Button>
+                    <Button className="meunuadmin" onClick={()=>{history.push('/customer')}}> ดูรายการลูกค้า </Button>
                     <Button className="meunuadmin" onClick={()=>{history.push('/productType')}}> จัดการหมวดหมู่สินค้า </Button>
                     <Button className="meunuadmin" onClick={()=>{history.push('/products')}}> จัดการสินค้า </Button>
-                    <Button className="meunuadmin"> จัดการรายการสั่งซื้อ </Button>
+                    <Button className="meunuadmin" onClick={()=>{history.push('/order')}}> จัดการรายการสั่งซื้อ </Button>
                 </Row>
             </Container>
         </>

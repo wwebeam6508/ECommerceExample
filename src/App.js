@@ -22,6 +22,8 @@ import ProductType from './pages/admin/menu/productType'
 import Products from './pages/admin/menu/products'
 import ProductView from './pages/productView/productView'
 import Cart from './pages/cartView/cart'
+import Customer from './pages/admin/menu/customer'
+import Orders from './pages/admin/menu/orders'
 
 firebase.initializeApp(firebaseConfig)
 function App() {
@@ -81,6 +83,10 @@ function App() {
             render={()=>( isLoggedIn ? userType === 'admin' ? <Admin/> : <Redirect to="/" />  : <Redirect to="/login" /> )} />
           <Route path="/hr" 
             render={()=>( isLoggedIn ? userType === 'admin' ? <HR/> : <Redirect to="/" />  : <Redirect to="/login" /> )} />
+          <Route path="/customer" 
+            render={()=>( isLoggedIn ? userType === 'admin' ? <Customer/> : <Redirect to="/" />  : <Redirect to="/login" /> )} />
+          <Route path="/order" 
+              render={()=>( isLoggedIn ? userType === 'admin' ? <Orders/> : <Redirect to="/" />  : <Redirect to="/login" /> )} />
           <Route path="/productType" 
             render={()=>( isLoggedIn ? userType === 'admin' ? <ProductType/> : <Redirect to="/" />  : <Redirect to="/login" /> )} />
           <Route path="/products" 
