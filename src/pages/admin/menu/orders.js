@@ -46,6 +46,7 @@ export default function Orders() {
                         <tr>
                         <th>#</th>
                         <th>ชื่อสินค้า</th>
+                        <th>สั่งโดย</th>
                         <th>ประเภทสินค้า</th>
                         <th>ราคา</th>
                         <th>จำนวน</th>
@@ -60,6 +61,7 @@ export default function Orders() {
                                     <tr key={index}>
                                         <td>{index+1}</td>
                                         <td className="clicktoview" onClick={()=>{history.push({pathname:'/productView',state:order})}}>{order.name}</td>
+                                        <td>{order.byName}</td>
                                         <td>{order.typeName}</td>
                                         <td>{order.price}</td>
                                         <td>{order.count}</td>
@@ -128,7 +130,7 @@ export default function Orders() {
         orderData.forEach(async (res)=>{
             const data = res.data()
             const type_name = (await getDoc(doc(db, 'productType', data.type))).data().name
-            const user_detail = (await getDoc(doc(db, 'users', data.byUID))).data()
+            const userDetail = (await getDoc(doc(db, 'users', data.byUID))).data()
             setOrders(prevForm=>[
                 ...prevForm,
                 {
@@ -140,7 +142,7 @@ export default function Orders() {
                     uid: res.id,
                     count: data.count,
                     byUID: data.byUID,
-                    byName: user_detail.name,
+                    byName: userDetail.name,
                     status: data.status
                 }
             ])

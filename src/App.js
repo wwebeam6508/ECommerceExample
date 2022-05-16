@@ -34,7 +34,7 @@ function App() {
   const [isLoggedIn, setisLoggedIn] = useState(false)
   const [userType, setUserType] = useState("")
   const [success, setSuccess] = useState(false)
-
+  localStorage.setItem('carts', JSON.stringify([]))
   onAuthStateChanged(auth ,async (user) =>{
     
     if (user) {
