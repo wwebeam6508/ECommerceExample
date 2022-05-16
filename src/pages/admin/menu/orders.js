@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { Button, Container, Form, Nav, Navbar, Table } from "react-bootstrap"
 import { useDispatch, useSelector } from "react-redux"
 import Swal from 'sweetalert2'
@@ -6,15 +6,17 @@ import withReactContent from 'sweetalert2-react-content'
 import { useHistory } from "react-router-dom"
 import { getUser } from "../../../redux/slices/authSlice"
 import { collection, doc, getDoc, getDocs, getFirestore, orderBy, query, updateDoc, where } from "firebase/firestore"
+import Receipt from "./components/receipt"
+import ReactToPrint, { PrintContextConsumer } from "react-to-print"
 
 export default function Orders() {
     const [success, setSuccess] = useState(false)
-    const user_detail = useSelector(getUser)
     const MySwal = withReactContent(Swal)
     const history = useHistory()
     const dispatch = useDispatch()
     const [orders, setOrders] = useState([])
     const [receipt, setReceipt] = useState([])
+    const componentRef = useRef()
     useEffect(()=>{
         async function init() {
             await getOrders()
@@ -74,6 +76,7 @@ export default function Orders() {
                         <tr>
                         <th>#</th>
                         <th>ชื่อสินค้า</th>
+                        <th>สั่งโดย</th>
                         <th>ประเภทสินค้า</th>
                         <th>ราคา</th>
                         <th>จำนวน</th>
@@ -88,11 +91,23 @@ export default function Orders() {
                                     <tr key={index}>
                                         <td>{index+1}</td>
                                         <td className="clicktoview" onClick={()=>{history.push({pathname:'/productView',state:re})}}>{re.name}</td>
+                                        <td>{re.byName}</td>
                                         <td>{re.typeName}</td>
                                         <td>{re.price}</td>
                                         <td>{re.count}</td>
                                         <td>อนุมัติแล้ว</td>
-                                        <td><Button onClick={()=>{}}>Print ใบเสร็จ</Button></td>
+                                        <td>
+                                            <ReactToPrint content={() => componentRef.current}>
+                                                <PrintContextConsumer>
+                                                    {({ handlePrint }) => (
+                                                        <Button onClick={handlePrint}>Print ใบเสร็จ</Button>
+                                                    )}
+                                                </PrintContextConsumer>
+                                            </ReactToPrint>
+                                            <div style={{ display: "none" }}>
+                                                <Receipt order={re} ref={componentRef} />
+                                            </div>
+                                        </td>
                                     </tr>
                                 )
                             })
@@ -113,7 +128,7 @@ export default function Orders() {
         orderData.forEach(async (res)=>{
             const data = res.data()
             const type_name = (await getDoc(doc(db, 'productType', data.type))).data().name
-            const user_name = (await getDoc(doc(db, 'users', data.byUID))).data().name
+            const user_detail = (await getDoc(doc(db, 'users', data.byUID))).data()
             setOrders(prevForm=>[
                 ...prevForm,
                 {
@@ -125,7 +140,7 @@ export default function Orders() {
                     uid: res.id,
                     count: data.count,
                     byUID: data.byUID,
-                    byName: user_name,
+                    byName: user_detail.name,
                     status: data.status
                 }
             ])
@@ -133,10 +148,11 @@ export default function Orders() {
 
         const recieptQuery = query(orderRef, where('status', '==', '2'))
         const recieptData = (await getDocs(recieptQuery))
+        setReceipt([])
         recieptData.forEach(async (res)=>{
             const data = res.data()
             const type_name = (await getDoc(doc(db, 'productType', data.type))).data().name
-            const user_name = (await getDoc(doc(db, 'users', data.byUID))).data().name
+            const userDetail = (await getDoc(doc(db, 'users', data.byUID))).data()
             setReceipt(prevForm=>[
                 ...prevForm,
                 {
@@ -148,7 +164,9 @@ export default function Orders() {
                     uid: res.id,
                     count: data.count,
                     byUID: data.byUID,
-                    byName: user_name,
+                    byName: userDetail.name,
+                    byAddress: userDetail.address,
+                    byPhone: userDetail.phoneNumber,
                     status: data.status
                 }
             ])
