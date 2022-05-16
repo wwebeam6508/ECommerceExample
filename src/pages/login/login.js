@@ -17,7 +17,7 @@ export default function Login() {
     return(
         <div className="container login_zone">
             <div className="brand-logo"></div>
-            <div className="brand-title">ECommerce</div>
+            <div className="brand-title">ECommerce Raj</div>
             <div className="inputs">
                 <label> Email</label>
                 <input value={email} onChange={(e)=>{setEmail(e.target.value)}} type="email" placeholder="example@example" />

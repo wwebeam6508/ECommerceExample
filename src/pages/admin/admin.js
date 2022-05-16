@@ -17,7 +17,7 @@ export default function Admin() {
         <>
             <Navbar bg="light" expand="lg">
                 <Container>
-                    <Navbar.Brand onClick={()=>{history.push('/')}}>ECommerce Admin</Navbar.Brand>
+                    <Navbar.Brand onClick={()=>{history.push('/')}}>Admin</Navbar.Brand>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="me-auto">

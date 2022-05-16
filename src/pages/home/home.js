@@ -50,7 +50,7 @@ export default function Home() {
         
         <Navbar bg="light" expand="lg">
             <Container>
-                <Navbar.Brand onClick={()=>{history.push('/')}}>ECommerce Fai</Navbar.Brand>
+                <Navbar.Brand onClick={()=>{history.push('/')}}>ECommerce Raj</Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
                 <Nav className="me-auto">
