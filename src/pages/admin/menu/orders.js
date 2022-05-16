@@ -16,7 +16,7 @@ export default function Orders() {
     const dispatch = useDispatch()
     const [orders, setOrders] = useState([])
     const [receipt, setReceipt] = useState([])
-    const componentRef = useRef()
+    const componentRef = useRef([])
     useEffect(()=>{
         async function init() {
             await getOrders()
@@ -99,15 +99,17 @@ export default function Orders() {
                                         <td>{re.count}</td>
                                         <td>อนุมัติแล้ว</td>
                                         <td>
-                                            <ReactToPrint content={() => componentRef.current}>
+                                            <ReactToPrint content={() => {
+                                                return componentRef.current[index];
+                                            }}>
                                                 <PrintContextConsumer>
                                                     {({ handlePrint }) => (
-                                                        <Button onClick={handlePrint}>Print ใบเสร็จ</Button>
+                                                        <Button onClick={()=>{handlePrint()}}>Print ใบเสร็จ</Button>
                                                     )}
                                                 </PrintContextConsumer>
                                             </ReactToPrint>
                                             <div style={{ display: "none" }}>
-                                                <Receipt order={re} ref={componentRef} />
+                                                <Receipt order={re} ref={(el) => (componentRef.current[index] = el)} />
                                             </div>
                                         </td>
                                     </tr>
@@ -150,6 +152,7 @@ export default function Orders() {
 
         const recieptQuery = query(orderRef, where('status', '==', '2'))
         const recieptData = (await getDocs(recieptQuery))
+        componentRef.current = componentRef.current.slice(0, recieptData.size)
         setReceipt([])
         recieptData.forEach(async (res)=>{
             const data = res.data()
