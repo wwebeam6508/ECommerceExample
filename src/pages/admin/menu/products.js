@@ -244,10 +244,10 @@ export default function Products() {
             productTypelist.push({...doc.data(),uid: doc.id})
         })
         setProductType(productTypelist)
-        if(productModal.type === ""){
+        if(!isEdit){
             setProductModal(prevForm=>({
                 ...prevForm,
-                type:productTypelist[0]
+                type:productTypelist[0].uid
             }))
         }
     }
@@ -267,7 +267,7 @@ export default function Products() {
     }
 
     async function addProduct(){
-        if(isEmpty(productModal.name)||isEmpty(productModal.type)){
+        if(isEmpty(productModal.name)){
             MySwal.fire({
                 icon: 'warning',
                 title: `เพิ่มสินค้า`,
