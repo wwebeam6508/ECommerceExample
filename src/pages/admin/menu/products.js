@@ -244,7 +244,7 @@ export default function Products() {
             productTypelist.push({...doc.data(),uid: doc.id})
         })
         setProductType(productTypelist)
-        if(!isEdit){
+        if(productModal.type === ""){
             setProductModal(prevForm=>({
                 ...prevForm,
                 type:productTypelist[0].uid
@@ -416,7 +416,6 @@ export default function Products() {
     async function openEdit(uid) {
         setUidEdit(uid)
         setIsOpen(true)
-        await getProductType()
         const db = getFirestore()
         const productRef = doc(db, 'products', uid)
         const productData = await getDoc(productRef)
@@ -427,6 +426,7 @@ export default function Products() {
             type: data.type,
             price: data.price
         })
+        await getProductType()
         setProductModal(prevForm=>({
             ...prevForm,
             images: data.images.map((image)=>{
