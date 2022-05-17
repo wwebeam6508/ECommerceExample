@@ -281,7 +281,7 @@ export default function Products() {
         await addDoc(productRef, {
             name:productModal.name,
             detail: productModal.detail,
-            type: productModal.type,
+            type: productModal.type != "" ? productModal.type : productType[0].uid,
             price: productModal.price,
             dateCreated: Timestamp.fromDate(new Date())
         }).then(async (res)=>{
@@ -322,7 +322,7 @@ export default function Products() {
         await updateDoc(productRef, {
             name:productModal.name,
             detail: productModal.detail,
-            type: productModal.type,
+            type: productModal.type != "" ? productModal.type : productType[0].uid,
             price: productModal.price,
             images:[]
         }).then(async (res)=>{
