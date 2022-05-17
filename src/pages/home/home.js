@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from "react"
-import { Navbar, Container, Nav, NavDropdown,Card,Button } from 'react-bootstrap'
+import { Navbar, Container, Nav, NavDropdown } from 'react-bootstrap'
 import './home.scss'
 import istockphoto from '../../assets/istockphoto.jpg'
 import Swal from 'sweetalert2'
@@ -9,8 +9,10 @@ import { signOutApp, getUser } from "../../../src/redux/slices/authSlice"
 import { getAuth, signOut} from "firebase/auth"
 import { useDispatch, useSelector } from "react-redux"
 import { useHistory } from "react-router-dom"
-import { collection, doc, getDoc, getDocs, getFirestore, orderBy, query, where } from "firebase/firestore"
+import { collection, doc, endAt, getDoc, getDocs, getFirestore, limit, orderBy, query, startAfter, startAt, where } from "firebase/firestore"
 import Modal from 'react-modal'
+import isEmpty from "../../ultis/isEmpty"
+import Pagination from "react-js-pagination"
 export default function Home() {
     const MySwal = withReactContent(Swal)
     const dispatch = useDispatch()
@@ -19,22 +21,18 @@ export default function Home() {
     let user_detail = useSelector(getUser)
 
     const [productType, setProductType] = useState("")
+    const [ searchProductName, setSearchProductName ] = useState("")
+    const [productTypeList, setProductTypeList] = useState("")
     const [products, setProducts] = useState([])
-    const [ modalIsOpen, setIsOpen] = useState(false)
 
-    const [ productModal , setProductModal] = useState({
-        name: "",
-        type: "",
-        typeName: "",
-        detail: "",
-        price: "",
-        uid: "",
-        images: []
-    })
+    const [activePage, setActivePage] = useState(1)
+
+    const [ totalProductCount , setTotalProductCount] = useState(0)
     
     useEffect(()=>{
         async function init() {
-            await getProducts()    
+            await getProducts()
+            await getProductType()
             setSuccess(true)
         }
         init()
@@ -47,7 +45,6 @@ export default function Home() {
         </Container>
         :
         <>
-        
         <Navbar bg="light" expand="lg">
             <Container>
                 <Navbar.Brand onClick={()=>{history.push('/')}}>ECommerce Raj</Navbar.Brand>
@@ -65,6 +62,34 @@ export default function Home() {
             </Container>
         </Navbar>
         <Container style={{height:"100%",width:"100%",marginTop:"2%"}}>
+            <form action="#">
+                <div className="row" style={{textAlign:"center"}}>
+                    <div className="col-lg-12">
+                        <div className="row">
+                            <div className="col-lg-6 col-md-6 col-sm-12 p-0">
+                                <input value={searchProductName} onChange={(e)=>{setSearchProductName(e.target.value)}} placeholder="ค้นหาสินค้า" className="form-control search-slt" id="exampleFormControlSelect1"/>
+                            </div>
+                            <div className="col-lg-3 col-md-3 col-sm-12 p-0">
+                                <select value={productType} onChange={(e)=>{
+                                    setProductType(e.target.value)
+                                }} className="form-control search-slt" id="exampleFormControlSelect1">
+                                    <option value={""}>ทั้งหมด</option>
+                                    {
+                                        productTypeList && productTypeList.map((type,index)=>{
+                                            return(
+                                                <option key={index} value={type.uid}>{type.name}</option>
+                                            )
+                                        })
+                                    }
+                                </select>
+                            </div>
+                            <div className="col-lg-3 col-md-3 col-sm-12 p-0">
+                                <button onClick={async ()=>{ await getProducts()}} type="button" className="btn btn-primary wrn-btn">Search</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
             <ul className="cards">
                 {
                     products && products.map((product, index)=>{
@@ -87,20 +112,37 @@ export default function Home() {
                     })
                 }
             </ul>
+            {/* <Pagination
+                activePage={activePage}
+                itemsCountPerPage={8}
+                totalItemsCount={totalProductCount}
+                pageRangeDisplayed={5}
+                onChange={onChangePageProduct}
+            /> */}
         </Container>
         </>
     )
 
+    async function onChangePageProduct(pageNumber) {
+        setActivePage(pageNumber)
+        await getProducts()
+    }
+
     async function getProducts() {
         const db = getFirestore()
         const productRef = collection(db, 'products')
-        const productQuery = query(productRef, orderBy('dateCreated', 'desc'))
-        let productWhere = productQuery
-        if(productType !== ''){
-            productWhere = query(productQuery, where('type','==',productType))
+        let productWhere = query(productRef , orderBy('name'))
+        if(!isEmpty(searchProductName)){
+            productWhere = query(productWhere , where('name', '>=', searchProductName))
+            productWhere = query(productWhere , where('name', '<=', searchProductName+ '\uf8ff'))
         }
+        if(productType !== ''){
+            productWhere = query(productWhere, where('type','==',productType))
+        }
+        // const productLast = query(productWhere, orderBy('dateCreated', 'desc'), startAfter((activePage-1)*8), limit(8))
         const productData = await getDocs(productWhere)
         setProducts([])
+        // setTotalProductCount((await getDocs(productWhere)).size)
         productData.forEach(async (res)=>{
             const data = res.data()
             const type_name = (await getDoc(doc(db, 'productType', data.type))).data().name
@@ -114,6 +156,24 @@ export default function Home() {
                     price: data.price,
                     uid: res.id,
                     image: data.images[0] ? data.images[0] : istockphoto
+                }
+            ])
+        })
+    }
+
+    async function getProductType() {
+        const db = getFirestore()
+        const productTypeRef = collection(db, 'productType')
+
+        const productTypeData = await getDocs(productTypeRef)
+        setProductTypeList([])
+        productTypeData.forEach(async (res)=>{
+            const data = res.data()
+            setProductTypeList(prevForm=>[
+                ...prevForm,
+                {
+                    name: data.name,
+                    uid: res.id
                 }
             ])
         })
